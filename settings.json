@@ -1,0 +1,27 @@
+{
+	"server" : {
+		"host" : "127.0.0.1",
+		"port" : "8080"
+	},
+	"database" : {
+		"host" : "127.0.0.1",
+		"port" : 27017,
+		"server_options" : {
+			"auto_reconnect" : true,
+			"poolSize" : 5,
+			"socketOptions" : {
+				"timeout" : 0,
+				"noDelay" : true,
+				"keepAlive" : 0,
+				"encoding" : "utf8"
+			}
+		},
+		"name" : "sitiri",
+		"db_options" : {
+			"native_parser" : true,
+			"strict" : true,
+			"safe" : 1	
+		}
+	},
+	"key" : "wmPQFWaZz4nRu2YU"
+}
