@@ -1,0 +1,15 @@
+[
+	{
+		"uri": "/",
+		"type" : "text",
+		"stylesheet" : "test.xsl",
+		"portlets" : [
+			{
+				"module" : "user",
+				"controller" : "user",
+				"permissions" : ["public"],
+				"cache" : 3600
+			}
+		]
+	}
+]
