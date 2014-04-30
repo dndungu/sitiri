@@ -1,0 +1,148 @@
+{
+	"name": "product",
+	"inherits": "generic.json",
+	"fields": [
+			{
+				"name": "name",
+				"type": "string",
+				"length": 64,
+				"validation": ["required", "string"]
+			},
+			{
+				"name": "notes",
+				"type": "string",
+				"length": 65535
+			},
+			{
+				"name": "image",
+				"type": "image",
+				"model": "image.json" 
+			},
+			{
+				"name": "gallery",
+				"type": "image.collection",
+				"model": "image.json"
+			},
+			{
+				"name": "tags",
+				"type": "string.collection",
+				"length": 32
+			},
+
+			{
+				"name": "physical",
+				"type": "boolean",
+				"_default": true
+			},
+			{
+				"name": "variants",
+				"type": "document.collection",
+				"fields": [
+					{
+						"name": "variants",
+						"type": "document.collection",
+						"fields": [
+								{
+									"name": "name",
+									"type": "string",
+									"length": 16,
+									"validation": ["required", "string"]
+								},
+								{
+									"name": "content",
+									"type": "string",
+									"length": 32,
+									"validation": ["required", "string"]
+								}
+						]
+					},
+					{
+						"name": "price",
+						"type": "document",
+						"fields": [
+							{
+								"name": "price",
+								"type": "double",
+								"length": 10.2,
+								"validation": ["required", "currency"]
+							},
+							{
+								"name": "currency",
+								"type": "string",
+								"length": 3,
+								"validation": ["required", "string"]
+							}				
+						]
+					},
+					{
+						"name": "pre_order",
+						"type": "boolean",
+						"_default": false
+					},
+					{
+						"name": "stock_quantity",
+						"type": "integer",
+						"length": 8,
+						"validation": ["positiveinteger"]
+					},
+					{
+						"name": "sku",
+						"type": "string",
+						"length": 32,
+						"validation": ["string"]
+					},
+					{
+						"name": "barcode",
+						"type": "string",
+						"length": 16,
+						"validation": ["string"]
+					}
+				]
+			},
+			{
+				"name": "capacity",
+				"type": "document",
+				"fields": [
+					{
+						"name": "capacity",
+						"type": "double",
+						"length": 8.3,
+						"validation": ["double"]
+					},
+					{
+						"name": "units",
+						"type": "string",
+						"length": 16,
+						"validation": ["string"]
+					}
+				]
+			},
+			{
+				"name": "taxable",
+				"type": "boolean",
+				"_default": false
+			},
+			{
+				"name": "handle",
+				"type": "string",
+				"validation": ["required", "handle"]
+			},
+			{
+				"name": "page_title",
+				"type": "string",
+				"length": 64,
+				"validation": ["string"]
+			},
+			{
+				"name": "meta_description",
+				"type": "string",
+				"length": 128,
+				"validation": ["string"]
+			},
+			{
+				"name": "published",
+				"type": "boolean",
+				"_default": false
+			}
+		]
+}

@@ -1,0 +1,54 @@
+{
+	"name": "image",
+	"inherits": "generic.json",
+	"fields": [
+			{
+				"name": "name",
+				"type": "string",
+				"length": 128,
+				"validation": ["required", "string"]
+			},
+			{
+				"name": "tiny",
+				"type": "string",
+				"length": 255,
+				"max_width": 100,
+				"validation": ["required", "string"]
+			},                {
+				"name": "small",
+				"type": "string",
+				"length": 255,
+				"max_width": 220,
+				"validation": ["required", "string"]
+			},                {
+				"name": "medium",
+				"type": "string",
+				"length": 255,
+				"max_width": 460,
+				"validation": ["required", "string"]
+			},                {
+				"name": "large",
+				"type": "string",
+				"length": 255,
+				"max_width": 940,
+				"validation": ["required", "string"]
+			},                {
+				"name": "original",
+				"type": "string",
+				"length": 255,
+				"validation": ["required", "string"]
+			},
+			{
+				"name": "width",
+				"type": "integer",
+				"length": 8,
+				"validation": ["required", "integer"]
+			},
+			{
+				"name": "height",
+				"type": "integer",
+				"length": 8,
+				"validation": ["required", "integer"]
+			}
+	]
+}

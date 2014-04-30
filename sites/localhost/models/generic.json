@@ -1,0 +1,26 @@
+{
+	"fields": [
+		{
+			"name": "_id",
+			"type": "string",
+			"validation": ["uuid", "required"],
+			"autogenerate": ["onInsert", "onEmpty"]
+		},
+
+		{
+			"name": "creation_time",
+			"type": "timestamp",
+			"autogenerate": 	["onInsert", "onEmpty"]
+		},
+		{
+			"name": "update_time",
+			"type": "timestamp",
+			"autogenerate":	["onUpdate", "onEmpty"] 
+		},
+		{
+			"name": "in_trash",
+			"type": "boolean", 
+			"_default": false
+		}
+	]
+}
