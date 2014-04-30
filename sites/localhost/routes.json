@@ -7,7 +7,7 @@
 			{
 				"module" : "user",
 				"controller" : "user",
-				"permissions" : ["public"],
+				"permissions" : ["public.permission"],
 				"cache" : 3600
 			}
 		]

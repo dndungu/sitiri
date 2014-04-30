@@ -27,12 +27,12 @@ var _private = {
 		_private.findPermissions(context);
 	},
 	onUserQueryEmpty: function(){
-		context.set('permissions', ['public']);
+		context.set('permissions', ['public.permission']);
 		_private.authorisePortlets(context);
 	},
 	findPermissions: function(){
 		var roles = context.get('user').roles;
-		var permissions = ['public'];
+		var permissions = ['public.permission'];
 		context.get("storage").get("global").collection("site").find({"_id" : {$in : roles}}).toArray(function(error, items){
 			return error ? _private.onQueryError(error) : function(roles){
                                 for(var i in roles){
