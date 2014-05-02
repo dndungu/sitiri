@@ -37,67 +37,7 @@
 			{
 				"name": "variants",
 				"type": "document.collection",
-				"fields": [
-					{
-						"name": "variants",
-						"type": "document.collection",
-						"fields": [
-								{
-									"name": "name",
-									"type": "string",
-									"length": 16,
-									"validation": ["required", "string"]
-								},
-								{
-									"name": "content",
-									"type": "string",
-									"length": 32,
-									"validation": ["required", "string"]
-								}
-						]
-					},
-					{
-						"name": "price",
-						"type": "document",
-						"fields": [
-							{
-								"name": "price",
-								"type": "double",
-								"length": 10.2,
-								"validation": ["required", "currency"]
-							},
-							{
-								"name": "currency",
-								"type": "string",
-								"length": 3,
-								"validation": ["required", "string"]
-							}				
-						]
-					},
-					{
-						"name": "pre_order",
-						"type": "boolean",
-						"_default": false
-					},
-					{
-						"name": "stock_quantity",
-						"type": "integer",
-						"length": 8,
-						"validation": ["positiveinteger"]
-					},
-					{
-						"name": "sku",
-						"type": "string",
-						"length": 32,
-						"validation": ["string"]
-					},
-					{
-						"name": "barcode",
-						"type": "string",
-						"length": 16,
-						"validation": ["string"]
-					}
-				]
+				"model": "variant.json"
 			},
 			{
 				"name": "capacity",
