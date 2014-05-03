@@ -15,7 +15,7 @@ var _private = {
 			var uri = String(request.url.trim()).toLowerCase();
 			var requestContext = new context();
 			var contextBroker = new broker();
-			var contextCookies = new cookies(request);
+			var contextCookies = new cookies(request.headers.cookie);
 			requestContext.set("cookies", contextCookies);
 			requestContext.set("request", request);
 			requestContext.set("response", response);

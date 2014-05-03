@@ -1,27 +1,34 @@
 
 module.exports = function(){
-	var request = arguments[0];
+	var cookieString = arguments[0] instanceof Array ? arguments[0] : arguments[0] ? [arguments[0]] : [];
 	var _private = {
-		store: {}
+		store: {
+			cookies: {}
+		},
+		parse: function(source){
+			if(!source.length) return;
+			for(var i in source){
+				var properties = source[i].split(';');
+				var firstProperty = properties.shift().split('=');
+				var name = firstProperty[0];
+				var value = firstProperty[1];
+				_private.store.cookies[name] = {name : name, value: value};
+				for(var j in properties){
+					var property = properties[j].split('=');
+					_private.store.cookies[name][property[0]] = property[1];
+				}
+			}
+		}
 	};
+	_private.parse(cookieString);
 	return {
-		init: function(){
-			var cookies = {};
-			request.headers.cookie && request.headers.cookie.split(';').forEach(function( cookie ) {
-				var parts = cookie.split('=');
-				cookies[ parts.shift().trim() ] = ( parts.join('=') || '' ).trim();
-			});
-			_private.store.cookies = cookies;
-		}(),
 		push : function(){
 			_private.store.cookies = _private.store.cookies ? _private.store.cookies : [];
 			_private.store.cookies.push(arguments[0]);
 		},
 		find : function(){
-			return arguments[0] ? _private.store.cookies[arguments[0]] : _private.store.cookies;
+			return arguments[0] ? _private.store.cookies[arguments[0]] ? _private.store.cookies[arguments[0]].value : null : _private.store.cookies;
 		},
-		reset: function(){
-			_private.store.cookies = {};
-		}
+		parse: _private.parse
 	}
 };

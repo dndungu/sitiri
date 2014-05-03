@@ -15,13 +15,13 @@
 			},
 			{
 				"name": "image",
-				"type": "image",
-				"model": "image.json" 
+				"type": "string",
+				"length": 36
 			},
 			{
 				"name": "gallery",
-				"type": "image.collection",
-				"model": "image.json"
+				"type": "string.collection",
+				"length": 36
 			},
 			{
 				"name": "tags",
