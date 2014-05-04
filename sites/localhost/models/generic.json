@@ -4,18 +4,18 @@
 			"name": "_id",
 			"type": "string",
 			"validation": ["uuid", "required"],
-			"autogenerate": ["onInsert", "onEmpty"]
+			"generate": ["insert", "empty"]
 		},
 
 		{
 			"name": "creation_time",
 			"type": "timestamp",
-			"autogenerate": 	["onInsert", "onEmpty"]
+			"generate": 	["insert", "empty"]
 		},
 		{
 			"name": "update_time",
 			"type": "timestamp",
-			"autogenerate":	["onUpdate", "onEmpty"] 
+			"generate":	["update", "empty"] 
 		},
 		{
 			"name": "in_trash",

@@ -1,6 +1,6 @@
 {
 	"name": "image",
-	"inherits": "generic.json",
+	"inherits": ["generic.json"],
 	"fields": [
 			{
 				"name": "name",

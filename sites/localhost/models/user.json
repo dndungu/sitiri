@@ -1,0 +1,67 @@
+{
+	"name": "user",
+	"inherits": ["generic"],
+	"fields": [
+		{
+			"name": "email",
+			"type": "string",
+			"length": 254,
+			"validation": ["required", "email"]
+		},
+		{
+			"name": "password",
+			"type": "string",
+			"length": 512,
+			"validation": ["required", "password"]
+		},
+		{
+			"name": "role_ids",
+			"type": "string.collection",
+			"length": 36
+		},
+		{
+			"name": "tokens",
+			"type": "document.collection",
+			"model": {
+				"name": "tokens",
+				"inherits": "generic.json",
+				"fields": [
+					{
+						"name": "token",
+						"type": "string",
+						"length": 512,
+						"validation": ["required", "string"]
+					},
+					{
+						"name": "expiry_time",
+						"type": "integer",
+						"length": 13,
+						"validation": ["required", "integer"] 
+					}
+				]
+			}
+		},
+		{
+			"name": "networks",
+			"type": "document.collection",
+			"model": {
+				"name": "networks
+				"inherits": "generic.json",
+				"fields": [
+					{
+						"name": "network",
+						"type": "string",
+						"length": 16,
+						"validation": ["required", "string"]
+					},
+					{
+						"name": "key",
+						"type": "string",
+						"length": 512,
+						"validation": ["required", "string"]
+					}
+				]
+			} 
+		}
+	]
+}

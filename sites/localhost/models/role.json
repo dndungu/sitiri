@@ -1,0 +1,24 @@
+{
+	"name": "role",
+	"inherits": ["generic.json"],
+	"fields": [
+		{
+			"name": "title",
+			"type": "string",
+			"length": 32,
+			"validation": ["required", "string"] 
+		},
+		{
+			"name": "notes",
+			"type": "string",
+			"length": 65535,
+			"validation": ["string"]
+		},
+		{
+			"name": "permissions",
+			"type": "string.collection",
+			"length": 32,
+			"validation": ["required", "string"]
+		}
+	]
+}

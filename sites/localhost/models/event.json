@@ -1,0 +1,42 @@
+{
+	"name": "event",
+	"inherits": ["generic.json"],
+	"fields": [
+		{
+			"name": "user_id",
+			"type": "string",
+			"length": 36,
+			"validation": ["required", "string"]
+		},
+		{
+			"name": "site_id",
+			"type": "string",
+			"length": 36,
+			"validation": ["required", "string"]
+		},
+		{
+			"name": "severity",
+			"type": "integer",
+			"length": 1,
+			"validation": ["required", "integer"]
+		},
+		{
+			"name": "subject",
+			"type": "string",
+			"length": 32,
+			"validation": ["required", "string"]
+		},
+		{
+			"name": "notes",
+			"type": "string",
+			"length": 65535,
+			"validation": ["required", "string"]
+		},
+		{
+			"name": "ip",
+			"type": "string",
+			"length": 15,
+			"validation": ["required", "ip"]
+		}
+	]
+}
