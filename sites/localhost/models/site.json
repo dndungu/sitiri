@@ -1,0 +1,46 @@
+{
+	"name": "site",
+	"inherits": "generic.json",
+	"fields": [
+			{
+				"name": "alias",
+				"type": "string",
+				"length": 253,
+				"validation": ["required", "domain"]
+			},
+                        {
+                                "name": "home",
+                                "type": "string",
+                                "length": 253,
+                                "validation": ["required", "string"]
+                        },
+			{
+				"name": "routes",
+				"type": "string",
+				"length": 16,
+				"validation": ["required", "string"]
+			},
+			{
+				"name": "setting",
+				"type": "document.collection",
+				"model": {
+					"name": "setting",
+					"inherits": "generic.json",
+					"fields": [
+						{
+							"name": "name",
+							"type": "string",
+							"length": 16,
+							"validation": ["required", "string"]
+						},
+                                                {
+                                                        "name": "content",
+                                                        "type": "string",
+                                                        "length": 65535,
+                                                        "validation": ["required", "string"]
+                                                }
+					]
+				}
+			}
+	]
+}
