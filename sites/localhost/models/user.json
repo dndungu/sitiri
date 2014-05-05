@@ -45,7 +45,7 @@
 			"name": "networks",
 			"type": "document.collection",
 			"model": {
-				"name": "networks"
+				"name": "networks",
 				"inherits": "generic.json",
 				"fields": [
 					{
