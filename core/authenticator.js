@@ -1,3 +1,4 @@
+"use strict"
 var crypto = require('crypto');
 var algorithm = 'aes256';
 var context = {};
@@ -49,6 +50,7 @@ var _private = {
 		var portlets = _private.getAuthorisedPortlets();
 		if(portlets.length){ 
 			context.set('portlets', portlets);
+			context.set("queue", portlets.length);
 			context.get("broker").emit({type : "authenticator.passed", data : context});
 		}else{
 			context.get("broker").emit({type : "authenticator.failed", data : context});

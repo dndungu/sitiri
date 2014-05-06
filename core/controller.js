@@ -1,6 +1,8 @@
+"use strict"
 var http = require('http');
 var router = require("../core/router.js");
 var authenticator = require("../core/authenticator.js");
+var cache = require("../core/cache.js");
 var operator = require("../core/operator.js");
 var publisher = require("../core/publisher.js");
 var storage = require('../utilities/storage.js');
@@ -27,6 +29,7 @@ var _private = {
 			requestContext.set("broker", contextBroker);
 			router.init(requestContext);
 			authenticator.init(requestContext);
+			cache.init(requestContext);
 			operator.init(requestContext);
 			publisher.init(requestContext);
 			requestContext.get("broker").emit({type : 'controller.passed', data : requestContext});

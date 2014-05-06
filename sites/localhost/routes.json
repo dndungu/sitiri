@@ -10,6 +10,26 @@
 				"permissions" : ["public.permission"],
 				"cache" : 3600
 			}
-		]
-	}
+		],
+		"stream": true
+	},
+        {
+                "uri": "/api/images",
+                "type" : "xml",
+                "portlets" : [
+                        {
+                                "module" : "content",
+                                "controller" : "image",
+                                "permissions" : ["public.permission"],
+                                "cache" : 0
+                        },
+                        {
+                                "module" : "user",
+                                "controller" : "user",
+                                "permissions" : ["public.permission"],
+                                "cache" : 0
+                        }
+                ],
+		"stream": false
+        }
 ]

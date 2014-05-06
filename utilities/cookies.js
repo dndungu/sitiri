@@ -1,12 +1,12 @@
 
 module.exports = function(){
-	var cookieString = arguments[0] instanceof Array ? arguments[0] : arguments[0] ? [arguments[0]] : [];
+	var cookieString = arguments[0] instanceof Array ? arguments[0] : (typeof arguments[0] == 'string' ? [arguments[0]] : []);
 	var _private = {
 		store: {
 			cookies: {}
 		},
 		parse: function(source){
-			if(!source.length) return;
+			if(!source || !source.length) return;
 			for(var i in source){
 				var properties = source[i].split(';');
 				var firstProperty = properties.shift().split('=');

@@ -6,6 +6,7 @@ module.exports = function(){
 	var client;
 
 	var options = {
+		headers: {},
 		hostname: 'localhost',
 		port: 8080,
 		secure: false
@@ -25,27 +26,32 @@ module.exports = function(){
 	client = options.secure ? require('https') : require('http');
 
 	return {
-		get: function(url, callback){
-			var request = this.request('GET', url, callback);
+		get: function(){
+			var defaults = arguments[0];
+			defaults.method = 'GET';
+			var request = this.request(defaults);
 			request.end();
 			return this;
 		},
-		post: function(url, data, callback){
+		post: function(){
+			var defaults = arguments[0];
+			defaults.method = 'POST';
 			data = querystring.stringify(data);
 			options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 			options.headers['Content.length'] = Buffer.byteLength(data,'utf8');
-			var request = this.request('POST', url, callback);
+			var request = this.request(defaults);
 			request.write(data);
 			request.end();
 			return this;
 		},
-		put: function(url, filename, callback){		
-			options.headers['Content-Type'] = 'multipart/form-data';
-			options.headers['Content.length'] = 0;
-			var stream = fs.createReadStream(filename);
-			var request = this.request('PUT', url, callback);
+		put: function(){
+			var defaults = arguments[0];
+			defaults.method = 'PUT';
+			options.headers['content-type'] = 'multipart/form-data';
+			options.headers['content-length'] = fs.statSync(defaults.filename).size;
+			var stream = fs.createReadStream(defaults.filename);
+			var request = this.request(defaults);
 			stream.on('data', function(data){
-				options.headers['Content.length'] += data.length;
 				request.write(data);
 			});
 			stream.on('end', function(){
@@ -53,21 +59,24 @@ module.exports = function(){
 			});
 			return this;
 		},
-		"delete": function(url, callback){
-			var request = this.request('DELETE', url, callback);
+		"delete": function(){
+			var defaults = arguments[0];
+			defaults.method = 'DELETE';
+			var request = this.request(defaults);
 			request.end();
 			return this;
 		},
-                request: function(method, url, callback){
-                        options.path = url;
-                        options.method = method;
+                request: function(){
+			var defaults = arguments[0];
+                        options.path = defaults.url;
+                        options.method = defaults.method;
                         var request = client.request(options, function(response){
 				_private.cookies.parse(response.headers['set-cookie']);
                                 response.setEncoding('utf8');
-                                response.on('data', callback);
+                                response.on('data', defaults.success);
                         });
                         request.on('error', function(error){
-                                console.log(error);
+                                defaults.error(error);
                         });
 			return request;
                 },

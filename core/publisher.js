@@ -1,44 +1,37 @@
-
+"use strict"
+var http = require("http");
 var _private = {
-	print : function(){
-		var code = arguments[0];
-		var context = arguments[1];
+	printHeader: function(){
+		var code = arguments[0].code;
+		var context = arguments[0].context;
+		var type = arguments[0].type;
 		var response = context.get('response');
-		switch(code){
-			case 200:
-				_private.printContent(context);
-				break;
-			case 403:
-				response.writeHead(403, {'Content-Type': 'text/plain'});
-				response.end('403 Forbidden');
-				break;
-			case 404:
-				response.writeHead(404, {'Content-Type': 'text/plain'});
-				response.end('404 - Not Found.');
-				break;
-		}
+		response.headersSent || response.writeHead(code, {'Content-Type': type});
+		(code > 199 && code <  299) || response.write(code + ' - ' + http.STATUS_CODES[code]);
 	},
 	printContent : function(){
-		var context = arguments[0];
+		var content = arguments[0].content;
+		var context = arguments[0].context;
 		var response = context.get('response');
 		switch(context.get('route').type){
 			case "xml":
-				response.writeHead(200, {'Content-Type': 'text/xml'});
-				response.end(_private.toXML(context.get('content')));
-			break;
+				response.write(_private.toXML(content));
+				break;
 			case "html":
-				response.writeHead(200, {'Content-Type': 'text/html'});
-				response.end(_private.toHTML(context));
-			break;
+				response.write(_private.toHTML(context, content));
+				break;
 			case "text":
-				response.writeHead(200, {'Content-Type': 'text/plain'});
-				response.end(JSON.stringify(context.get('content')));
-			break;
+				response.write(JSON.stringify(content));
+				break;
 			case "json":
-				response.writeHead(200, {'Content-Type': 'application/json'});
-				response.end(JSON.stringify(context.get('content')));
-			break;
+				response.write(JSON.stringify(content));
+				break;
 		}
+	},
+	getContentType: function(){
+		var context = arguments[0];
+		var type = context.get('route').type;
+		return type == "xml" ? "text/xml" : type == "html" ? "text/html" : type == "json" ? "application/json" : "text/plain";
 	},
 	toXML : function(){
 		var content = arguments[0];
@@ -60,7 +53,7 @@ var _private = {
 		var context = arguments[0];
 		var xslt = require('node_xslt');
 		var stylesheet = xslt.readXsltFile('./templates/' + context.get('site').settings.theme + '/' + context.get('route').stylesheet);
-		var xml = xslt.readXmlString(_private.toXML(context.get('content')));
+		var xml = xslt.readXmlString(_private.toXML(content));
 		return xslt.transform(stylesheet, xml, []);
 	}
 };
@@ -68,14 +61,35 @@ var _private = {
 module.exports = {
 	init : function(){
 		var context = arguments[0];
-                context.get("broker").on(['authenticator.failed'], function(){
-                        _private.print(403, context);
+		var broker = context.get("broker");
+                broker.on(['authenticator.failed'], function(){
+			var context = arguments[0].data;
+                        _private.printHeader({code: 403, context: context});
+			context.get("response").end()
                 });
-		context.get("broker").on(['routing.failed', 'aliasing.failed'], function(){
-			_private.print(404, context);
+		broker.on(['routing.failed', 'aliasing.failed'], function(){
+			var context = arguments[0].data;
+			_private.printHeader({code: 404, context: context, type: 'text/plain'});
+			context.get("response").end()
 		});
-		context.get("broker").on(['operator.passed'], function(){
-			_private.print(200, context);
+		broker.on(["app.content"], function(){
+			var context = arguments[0].data.context;
+			var content = arguments[0].data.content;
+			_private.printHeader({code: 206, context: context, type: _private.getContentType(context)});
+			_private.printContent({content: content, context: context});
+		});
+		broker.on(["app.header"], function(){
+			var code = arguments[0].data.code;
+			var context = arguments[0].data.context;
+			_private.printHeader({code: code, context: context, type: 'text/plain'});
+		});
+		broker.on(["app.passed", "app.failed"], function(){
+			var context = arguments[0].data.context;
+			var module = arguments[0].data.portlet.module;
+			var controller = arguments[0].data.portlet.controller;
+			var queue = context.get("queue");
+			context.set("queue", --queue);
+			queue || context.get("response").end();
 		});
 	}
 };
