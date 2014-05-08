@@ -1,35 +1,30 @@
 [
-	{
-		"uri": "/",
-		"type" : "text",
-		"stylesheet" : "test.xsl",
-		"portlets" : [
-			{
-				"module" : "user",
-				"controller" : "user",
-				"permissions" : ["public.permission"],
-				"cache" : 3600
-			}
-		],
-		"stream": true
-	},
-        {
-                "uri": "/api/images",
-                "type" : "xml",
-                "portlets" : [
-                        {
-                                "module" : "content",
-                                "controller" : "image",
-                                "permissions" : ["public.permission"],
-                                "cache" : 0
-                        },
-                        {
-                                "module" : "user",
-                                "controller" : "user",
-                                "permissions" : ["public.permission"],
-                                "cache" : 0
-                        }
-                ],
-		"stream": false
-        }
+		{
+				"uri": "/",
+				"type" : "text",
+				"stylesheet" : "test.xsl",
+				"portlets" : [
+						{
+								"module" : "user",
+								"controller" : "user",
+								"permissions" : ["public.permission"],
+								"cache" : 3600
+						}
+				],
+				"sync": false
+		},
+		{
+				"uri": "/api/images",
+				"type" : "html",
+				"stylesheet" : "test.xsl",
+				"portlets" : [
+						{
+								"module" : "content",
+								"controller" : "image",
+								"permissions" : ["public.permission"],
+								"cache" : 0
+						}
+				],
+				"sync": true
+		}
 ]
