@@ -12,7 +12,7 @@ module.exports = {
 		var path = this.path(options) + '/' + options.folder + '/' + _id;
 		var writer = fs.createWriteStream(path, {flags: options.flag, encoding: options.encoding, mode: options.mode});
 		request.pipe(writer);
-		request.on('end', options.success);
+		request.on('end', options.end);
 		request.on('error', options.error);
 		request.on('close', options.error);
 		return _id;

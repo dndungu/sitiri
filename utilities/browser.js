@@ -9,12 +9,30 @@ module.exports = function(){
 		headers: {},
 		hostname: 'localhost',
 		port: 8080,
-		secure: false
+		encoding: 'utf8',
+		secure: true
 	}
 
 	var _private = {
 		cookies: new cookies(),
-		store: {}
+		store: {},
+		request: function(){
+				var args = arguments[0];
+				options.path = args.url;
+				options.method = args.method;
+				options.cert && (options.cert = fs.readFileSync(options.cert, options.encoding));
+				options.key && (options.key = fs.readFileSync(options.key, options.encoding));
+				var cookieString = _private.cookies.toString();
+				cookieString.length && (options.headers['Cookie'] = _private.cookies.toString());
+				var request = client.request(options, function(response){
+						_private.cookies.parse(response.headers);
+						response.setEncoding(options.encoding);
+						response.on('data', args.data);
+						response.on('end', args.end);
+				});
+				request.on('error', args.error);
+				return request;
+		},
 	}
 
 	var parameters = arguments[0];
@@ -27,30 +45,30 @@ module.exports = function(){
 
 	return {
 		get: function(){
-			var defaults = arguments[0];
-			defaults.method = 'GET';
-			var request = this.request(defaults);
+			var args = arguments[0];
+			args.method = 'GET';
+			var request = _private.request(args);
 			request.end();
 			return this;
 		},
 		post: function(){
-			var defaults = arguments[0];
-			defaults.method = 'POST';
+			var args = arguments[0];
+			args.method = 'POST';
 			data = querystring.stringify(data);
 			options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 			options.headers['Content.length'] = Buffer.byteLength(data,'utf8');
-			var request = this.request(defaults);
+			var request = _private.request(args);
 			request.write(data);
 			request.end();
 			return this;
 		},
 		put: function(){
-			var defaults = arguments[0];
-			defaults.method = 'PUT';
+			var args = arguments[0];
+			args.method = 'PUT';
 			options.headers['content-type'] = 'multipart/form-data';
-			options.headers['content-length'] = fs.statSync(defaults.filename).size;
-			var stream = fs.createReadStream(defaults.filename);
-			var request = this.request(defaults);
+			options.headers['content-length'] = fs.statSync(args.filename).size;
+			var stream = fs.createReadStream(args.filename);
+			var request = _private.request(args);
 			stream.on('data', function(data){
 				request.write(data);
 			});
@@ -60,28 +78,18 @@ module.exports = function(){
 			return this;
 		},
 		"delete": function(){
-			var defaults = arguments[0];
-			defaults.method = 'DELETE';
-			var request = this.request(defaults);
+			var args = arguments[0];
+			args.method = 'DELETE';
+			var request = _private.request(args);
 			request.end();
 			return this;
 		},
-                request: function(){
-			var defaults = arguments[0];
-                        options.path = defaults.url;
-                        options.method = defaults.method;
-                        var request = client.request(options, function(response){
-				_private.cookies.parse(response.headers['set-cookie']);
-                                response.setEncoding('utf8');
-                                response.on('data', defaults.success);
-                        });
-                        request.on('error', function(error){
-                                defaults.error(error);
-                        });
-			return request;
-                },
-		header: function(){
-			options.header[arguments[0]] = arguments[1];
+		setHeader: function(){
+			options.headers[arguments[0]] = arguments[1];
+			return this;
+		},
+		setOption: function(){
+			options[arguments[0]] = arguments[1];
 			return this;
 		}
 	}

@@ -2,35 +2,23 @@
 var fs = require('fs');
 module.exports = {
 	doGet: function(){
-                var context = arguments[0].context;
-                var portlet = arguments[0].portlet;
-                var broker = context.get("broker");
-		broker.emit({type: "app.content", data: {content: {action: "to list requested images"}, context: context, portlet: portlet}});
-		broker.emit({type: "app.passed", data: {context: context, portlet: portlet}});
+			var args = arguments[0];
+			args.data({action: "to list requested images"});
+			args.end()
 	},
 	doPost: function(){
 		return {action : 'to register users'};
 	},
 	doPut: function(){
-		var handler = require('../lib/upload.js');
-		var context = arguments[0].context;
-		var portlet = arguments[0].portlet;
-		var broker = context.get("broker");
+		var args = arguments[0];
+		console.log(args.context.get('request').headers);
+		var upload = require('../lib/upload.js');
 		try{
-			handler.mkdir({context: context});
-			var _id = handler.save({
-					context: context,
-					success: function(){
-						broker.emit({type: "app.passed", data: {context: context, portlet: portlet}});
-					},
-					error: function(){
-						broker.emit({type: "app.failed", data: {context: context, portlet: portlet}});
-					}
-			});
-			broker.emit({type: "app.content", data: {content: {_id: _id}, context: context, portlet: portlet}});
+			upload.mkdir({context: args.context});
+			var _id = upload.save(args);
+			args.data({_id: _id});
 		}catch(error){
-			broker.emit({type: "app.content", data: {content: {error: error}, context: context, portlet: portlet}});
-			broker.emit({type: "app.failed", data: {context: context, portlet: portlet}});
+			args.error(error);
 		}
 	},
 	doDelete: function(){

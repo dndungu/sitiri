@@ -43,7 +43,7 @@ var _private = {
 		var content = arguments[0];
 		var xml = [];
 		for(var i in content){
-			var name = typeof i == 'number' ? 'node-' + i : i;
+			var name = isNaN(i) ? i : 'node-' + String(i);
 			var value = ['number', 'boolean', 'string'].indexOf(typeof content[i]) == -1 ? _private.buildXML(content[i], xml) : String(content[i]);
 			xml.push('<'+name+'>'+value+'</'+name+'>');
 		}
@@ -51,10 +51,17 @@ var _private = {
 	},
 	toHTML : function(){
 		var context = arguments[0];
+		var content = arguments[1];
 		var xslt = require('node_xslt');
 		var stylesheet = xslt.readXsltFile('./templates/' + context.get('site').settings.theme + '/' + context.get('route').stylesheet);
 		var xml = xslt.readXmlString(_private.toXML(content));
 		return xslt.transform(stylesheet, xml, []);
+	},
+	buffer: function(){
+		var context = arguments[0].context;
+		var content = arguments[0].content;
+		var portlet = arguments[0].portlet;
+		
 	}
 };
 
@@ -72,23 +79,22 @@ module.exports = {
 			_private.printHeader({code: 404, context: context, type: 'text/plain'});
 			context.get("response").end()
 		});
-		broker.on(["app.content"], function(){
-			var context = arguments[0].data.context;
-			var content = arguments[0].data.content;
-			_private.printHeader({code: 206, context: context, type: _private.getContentType(context)});
-			_private.printContent({content: content, context: context});
+		broker.on(["app.data"], function(){
+			var args = arguments[0];
+			var context = args.data.context;
+			var type = _private.getContentType(context);
+			var sync = context.get("route").sync;
+			sync || _private.printHeader({code: 206, type: type, context: context});
+			sync ? context.buffer(args.data) : _private.printContent(args.data);
 		});
-		broker.on(["app.header"], function(){
-			var code = arguments[0].data.code;
+		broker.on(["app.end", "app.error"], function(){
 			var context = arguments[0].data.context;
-			_private.printHeader({code: code, context: context, type: 'text/plain'});
-		});
-		broker.on(["app.passed", "app.failed"], function(){
-			var context = arguments[0].data.context;
-			var module = arguments[0].data.portlet.module;
-			var controller = arguments[0].data.portlet.controller;
-			var queue = context.get("queue");
-			context.set("queue", --queue);
+			var type = _private.getContentType(context);
+			var sync = context.get("route").sync;
+			var queue = (context.get("queue") - 1);
+			queue && context.set("queue", queue);
+			queue || (sync && _private.printHeader({code: 200, type: type, context: context}));
+			queue || (sync && _private.printContent({context: context, content: context.get("buffer")}))
 			queue || context.get("response").end();
 		});
 	}

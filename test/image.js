@@ -12,11 +12,13 @@ var browser = require('../utilities/browser.js');
 			});
 			tab.put({
 				url: '/api/images',
-				filename: 'test/images/handbag.jpg',
-				success: function(response){
+				filename: '/var/www/html/sitiri/test/images/handbag.jpg',
+				data: function(response){
 					console.log(response);
-					response = JSON.parse(response);
 //					assert.equal(36, response.content.image._id.length);
+				},
+				end: function(){
+//					console.log('thanks');
 				},
 				error: function(error){
 //					assert.equal('undefined', typeof error);

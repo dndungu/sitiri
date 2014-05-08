@@ -15,7 +15,7 @@
 		},
 		{
 				"uri": "/api/images",
-				"type" : "html",
+				"type" : "json",
 				"stylesheet" : "test.xsl",
 				"portlets" : [
 						{
@@ -23,8 +23,14 @@
 								"controller" : "image",
 								"permissions" : ["public.permission"],
 								"cache" : 0
-						}
+						},
+                        {
+                                "module" : "user",
+                                "controller" : "user",
+                                "permissions" : ["public.permission"],
+                                "cache" : 0
+                        }
 				],
-				"sync": true
+				"sync": false
 		}
 ]
