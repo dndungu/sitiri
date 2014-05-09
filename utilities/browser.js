@@ -1,5 +1,6 @@
 var querystring = require('querystring');
 var fs = require('fs');
+var zlib = require("zlib");
 var cookies = require('../utilities/cookies.js');
 module.exports = function(){
 
@@ -15,7 +16,7 @@ module.exports = function(){
 
 	var _private = {
 		cookies: new cookies(),
-		store: {},
+		store: {headers: {}},
 		request: function(){
 				var args = arguments[0];
 				options.path = args.url;
@@ -24,11 +25,18 @@ module.exports = function(){
 				options.key && (options.key = fs.readFileSync(options.key, options.encoding));
 				var cookieString = _private.cookies.toString();
 				cookieString.length && (options.headers['Cookie'] = _private.cookies.toString());
+				var buffer = [];
 				var request = client.request(options, function(response){
+						_private.store.headers = response.headers;
 						_private.cookies.parse(response.headers);
-						response.setEncoding(options.encoding);
-						response.on('data', args.data);
-						response.on('end', args.end);
+						var gunzip = zlib.createGunzip()
+						response.pipe(gunzip);
+						gunzip.on('data', function(data){
+							buffer.push(data.toString())
+							args.data && args.data(data.toString());
+						}).on('end', function(){
+							args.end && args.end(buffer.join(''));
+						});
 				});
 				request.on('error', args.error);
 				return request;
@@ -83,6 +91,13 @@ module.exports = function(){
 			var request = _private.request(args);
 			request.end();
 			return this;
+		},
+		getHeader: function(){
+				var key = arguments[0];
+				return _private.store.headers.hasOwnProperty(key) ? _private.store.headers[key] : null;
+		},
+		getAllHeaders: function(){
+				return _private.store.headers;
 		},
 		setHeader: function(){
 			options.headers[arguments[0]] = arguments[1];
