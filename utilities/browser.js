@@ -1,6 +1,7 @@
 var querystring = require('querystring');
 var fs = require('fs');
 var zlib = require("zlib");
+var stream = require('stream');
 var cookies = require('../utilities/cookies.js');
 module.exports = function(){
 
@@ -21,21 +22,26 @@ module.exports = function(){
 				var args = arguments[0];
 				options.path = args.url;
 				options.method = args.method;
-				options.cert && (options.cert = fs.readFileSync(options.cert, options.encoding));
-				options.key && (options.key = fs.readFileSync(options.key, options.encoding));
 				var cookieString = _private.cookies.toString();
-				cookieString.length && (options.headers['Cookie'] = _private.cookies.toString());
-				var buffer = [];
+				cookieString.length && (options.headers['cookie'] = _private.cookies.toString());
 				var request = client.request(options, function(response){
-						_private.store.headers = response.headers;
-						_private.cookies.parse(response.headers);
-						var gunzip = zlib.createGunzip()
-						response.pipe(gunzip);
-						gunzip.on('data', function(data){
-							buffer.push(data.toString())
-							args.data && args.data(data.toString());
-						}).on('end', function(){
-							args.end && args.end(buffer.join(''));
+						var buffer = [];
+						var reader = new stream.Duplex();
+						var encoding = response.headers['content-encoding'];
+						var writer = encoding == "gzip" ? response.pipe(zlib.createGunzip()) : (encoding == "deflate" ? response.pipe(zlib.createDeflate()) : response);
+						writer
+						.on('data', function(){
+								var data = arguments[0].toString();
+								buffer.push(data);
+								args.data && args.data(data);
+						})
+						.on('end', function(){
+								args.end && args.end(buffer.join(""));
+								_private.store.headers = response.headers;
+								_private.cookies.parse(_private.store.headers);
+						})
+						.on('error', function(){
+								args.error && args.error(arguments[0]);
 						});
 				});
 				request.on('error', args.error);
@@ -62,9 +68,9 @@ module.exports = function(){
 		post: function(){
 			var args = arguments[0];
 			args.method = 'POST';
-			data = querystring.stringify(data);
-			options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-			options.headers['Content.length'] = Buffer.byteLength(data,'utf8');
+			data = querystring.stringify(args.form);
+			options.headers['content-type'] = 'application/x-www-form-urlencoded';
+			options.headers['content-length'] = Buffer.byteLength(data,'utf8');
 			var request = _private.request(args);
 			request.write(data);
 			request.end();

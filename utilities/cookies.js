@@ -5,7 +5,8 @@ module.exports = function(){
 			cookies: []
 		},
 		parse: function(headers){
-			headers.hasOwnProperty("cookie") ? _private.parseCookie(headers['cookie']) : _private.parseSetCookie(headers['set-cookie']);
+			console.log(headers);
+			headers["cookie"] ? _private.parseCookie(headers['cookie']) : (headers["set-cookie"] ? _private.parseSetCookie(headers['set-cookie']) : null);
 		},
 		parseSetCookie: function(source){
 			source = typeof source == 'string' ? source : "";
@@ -32,7 +33,7 @@ module.exports = function(){
 			}
 		}
 	};
-	headers && _private.parse(headers);
+	headers && headers.length && _private.parse(headers);
 	return {
 		push : function(){
 			_private.store.cookies = _private.store.cookies ? _private.store.cookies : [];
@@ -53,10 +54,9 @@ module.exports = function(){
 		},
 		parse: _private.parse,
 		toString: function(){
-			var obj = this.find();
 			var arr = [];
-			for(var i in obj){
-				arr.push(i + '=' + obj[i] + ';');
+			for(var i in _private.store.cookies){
+				arr.push(_private.store.cookies[i].name + '=' + _private.store.cookies[i].value + ';');
 			}
 			return arr.join('');
 		}
