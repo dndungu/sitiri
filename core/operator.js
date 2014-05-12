@@ -4,78 +4,76 @@ var cache = {};
 var _private = {
 	execute: function(){
 		var context = arguments[0].data.context;
-		var portlet = arguments[0].data.portlet;
+		var app = arguments[0].data.app;
 		var broker = context.get("broker");
-		var module = portlet.module;
-		var controller = portlet.controller;
-		var handler =  require('../modules/' + module + '/controllers/' + controller + '.js');
+		var handler =  require('../modules/' + app.module + '/handlers/' + app.handler + '.js');
 		switch(context.get('method')){
 			case 'GET':
-				handler.doGet({
+				handler["get"]({
 						context: context,
 						data: function(){
 							var content = arguments[0] ? arguments[0] : null;
-							broker.emit({type: "app.data", data: {content: content, context: context, portlet: portlet}});	
+							broker.emit({type: "app.data", data: {content: content, context: context, app: app}});	
 						},
 						end: function(){
 							var content = arguments[0] ? arguments[0] : null;
-							broker.emit({type: "app.end", data: {content: content, context: context, portlet: portlet}});
+							broker.emit({type: "app.end", data: {content: content, context: context, app: app}});
 						},
 						error: function(){
 							var content = arguments[0] ? arguments[0] : null;
-							broker.emit({type: "app.error", data: {content: content, context: context, portlet: portlet}});
+							broker.emit({type: "app.error", data: {content: content, context: context, app: app}});
 						}
 				});
 				break;
 			case 'POST':
-                handler.doPost({
+                handler["post"]({
                         context: context,
 						data: function(){
 							var content = arguments[0] ? arguments[0] : null;
-							broker.emit({type: "app.data", data: {content: content, context: context, portlet: portlet}});
+							broker.emit({type: "app.data", data: {content: content, context: context, app: app}});
 						},
                         end: function(){
 							var content = arguments[0] ? arguments[0] : null;
-							broker.emit({type: "app.end", data: {content: content, context: context, portlet: portlet}});
+							broker.emit({type: "app.end", data: {content: content, context: context, app: app}});
                         },
                         error: function(){
 							var content = arguments[0] ? arguments[0] : null;
-							broker.emit({type: "app.error", data: {content: content, context: context, portlet: portlet}});
+							broker.emit({type: "app.error", data: {content: content, context: context, app: app}});
                         }
                 });
 				break;
 			case 'PUT':
-                handler.doPut({
+                handler["put"]({
                         context: context,
 						data: function(){
 							var content = arguments[0] ? arguments[0] : null;
-							broker.emit({type: "app.data", data: {content: content, context: context, portlet: portlet}});
+							broker.emit({type: "app.data", data: {content: content, context: context, app: app}});
 						},
                         end: function(){
 							var content = arguments[0] ? arguments[0] : null;
-							broker.emit({type: "app.end", data: {content: content, context: context, portlet: portlet}});
+							broker.emit({type: "app.end", data: {content: content, context: context, app: app}});
                         },
                         error: function(){
 							var content = arguments[0] ? arguments[0] : null;
-							broker.emit({type: "app.error", data: {content: content, context: context, portlet: portlet}});
+							broker.emit({type: "app.error", data: {content: content, context: context, app: app}});
                         }
                 });
 
 				break;
 			case 'DELETE':
-                handler.doDelete({
+                handler["delete"]({
                         context: context,
 						data: function(){
 							var content = arguments[0] ? arguments[0] : null;
-							broker.emit({type: "app.data", data: {content: content, context: context, portlet: portlet}});
+							broker.emit({type: "app.data", data: {content: content, context: context, app: app}});
 						},
                         end: function(){
 							var content = arguments[0] ? arguments[0] : null;
-							broker.emit({type: "app.end", data: {content: content, context: context, portlet: portlet}});
+							broker.emit({type: "app.end", data: {content: content, context: context, app: app}});
                         },
                         error: function(){
 							var content = arguments[0] ? arguments[0] : null;
-							broker.emit({type: "app.error", data: {content: content, context: context, portlet: portlet}});
+							broker.emit({type: "app.error", data: {content: content, context: context, app: app}});
                         }
                 });
 				break;

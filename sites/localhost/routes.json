@@ -3,10 +3,10 @@
 				"uri": "/",
 				"type" : "text",
 				"stylesheet" : "test.xsl",
-				"portlets" : [
+				"apps" : [
 						{
 								"module" : "user",
-								"controller" : "user",
+								"handler" : "user",
 								"permissions" : ["public.permission"],
 								"cache" : 3600
 						}
@@ -14,23 +14,30 @@
 				"sync": false
 		},
 		{
-				"uri": "/api/images",
-				"type" : "json",
-				"stylesheet" : "test.xsl",
-				"portlets" : [
-						{
-								"module" : "content",
-								"controller" : "image",
-								"permissions" : ["public.permission"],
-								"cache" : 0
-						},
-                        {
-                                "module" : "user",
-                                "controller" : "user",
-                                "permissions" : ["public.permission"],
-                                "cache" : 0
-                        }
+			"uri": "/api/images",
+			"type" : "json",
+			"stylesheet" : "test.xsl",
+			"apps" : [
+					{
+						"module" : "content",
+						"handler" : "files",
+						"permissions" : ["public.permission"],
+						"cache" : 0
+					},
+					{
+						"module" : "user",
+						"handler" : "user",
+						"permissions" : ["public.permission"],
+						"cache" : 0
+					}
 				],
-				"sync": false
+				"sync": false,
+				"settings": {"upload_home": "public/sites", "upload_dir": "images"},
+		},
+		{
+			"uri": "/api/role",
+			"type": "/api/json",
+			"apps" : [
+			]
 		}
 ]

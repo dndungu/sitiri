@@ -56,12 +56,6 @@ var _private = {
 		var stylesheet = xslt.readXsltFile('./templates/' + context.get('site').settings.theme + '/' + context.get('route').stylesheet);
 		var xml = xslt.readXmlString(_private.toXML(content));
 		return xslt.transform(stylesheet, xml, []);
-	},
-	buffer: function(){
-		var context = arguments[0].context;
-		var content = arguments[0].content;
-		var portlet = arguments[0].portlet;
-		
 	}
 };
 

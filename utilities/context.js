@@ -14,8 +14,8 @@ module.exports = function(){
 		},
 		buffer: function(){
 			var args = arguments[0];
-			var module = args.portlet.module;
-			var controller = args.portlet.controller;
+			var module = args.app.module;
+			var controller = args.app.controller;
 			_private.store.buffer = _private.store.buffer ? _private.store.buffer : {};
 			_private.store.buffer[module] = _private.store.buffer[module] ? _private.store.buffer[module] : {};
 			_private.store.buffer[module][controller] = _private.store.buffer[module][controller] ? _private.store.buffer[module][controller] : [];

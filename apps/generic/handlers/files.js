@@ -1,17 +1,16 @@
 "use strict"
 var fs = require('fs');
 module.exports = {
-	doGet: function(){
+	"get": function(){
 			var args = arguments[0];
 			args.data({action: "to list requested images"});
 			args.end()
 	},
-	doPost: function(){
+	"post": function(){
 		return {action : 'to register users'};
 	},
-	doPut: function(){
+	"put": function(){
 		var args = arguments[0];
-		console.log(args.context.get('request').headers);
 		var upload = require('../lib/upload.js');
 		try{
 			upload.mkdir({context: args.context});
@@ -21,7 +20,7 @@ module.exports = {
 			args.error(error);
 		}
 	},
-	doDelete: function(){
+	"delete": function(){
 		return {action : 'to delete'};
 	}
 };
