@@ -1,3 +1,4 @@
+"use strict"
 var querystring = require('querystring');
 var fs = require('fs');
 var zlib = require("zlib");
@@ -22,9 +23,13 @@ module.exports = function(){
 				var args = arguments[0];
 				options.path = args.url;
 				options.method = args.method;
-				var cookieString = _private.cookies.toString();
-				cookieString.length && (options.headers['cookie'] = _private.cookies.toString());
+				var cookieString = _private.cookies.toCookieString();
+				cookieString.length && (options.headers['cookie'] = cookieString);
 				var request = client.request(options, function(response){
+						_private.cookies.parse(response.headers);
+						var redirect = response.headers['location'];
+						redirect && _private.redirect(args);
+						if(redirect) return;
 						var buffer = [];
 						var reader = new stream.Duplex();
 						var encoding = response.headers['content-encoding'];
@@ -36,17 +41,28 @@ module.exports = function(){
 								args.data && args.data(data);
 						})
 						.on('end', function(){
-								args.end && args.end(buffer.join(""));
 								_private.store.headers = response.headers;
 								_private.cookies.parse(_private.store.headers);
+								args.end && args.end(buffer.join(""));
 						})
 						.on('error', function(){
 								args.error && args.error(arguments[0]);
 						});
 				});
-				request.on('error', args.error);
+				request.on('error', function(){
+						args.error && args.error(arguments[0]);
+					});
 				return request;
 		},
+		redirect: function(args){
+				delete options.headers['content-length'];
+				delete options.headers['content-type'];
+				args.url = _private.store.headers['location'];
+				console.log('redirecting to : '+ args.url);
+				var request = _private.request(args);
+				request.end();
+				return;
+		}
 	}
 
 	var parameters = arguments[0];
@@ -68,7 +84,7 @@ module.exports = function(){
 		post: function(){
 			var args = arguments[0];
 			args.method = 'POST';
-			data = querystring.stringify(args.form);
+			var data = querystring.stringify(args.form);
 			options.headers['content-type'] = 'application/x-www-form-urlencoded';
 			options.headers['content-length'] = Buffer.byteLength(data,'utf8');
 			var request = _private.request(args);

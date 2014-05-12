@@ -1,24 +1,21 @@
 module.exports = function(){
-	var headers = arguments[0];
 	var _private = {
 		store: {
 			cookies: []
 		},
 		parse: function(headers){
-			console.log(headers);
-			headers["cookie"] ? _private.parseCookie(headers['cookie']) : (headers["set-cookie"] ? _private.parseSetCookie(headers['set-cookie']) : null);
-		},
-		parseSetCookie: function(source){
-			source = typeof source == 'string' ? source : "";
-			var items = source.split(',');
+					},
+		parseSetCookie: function(items){
 			for(var i in items){
 				var item = items[i];
 				var properties = item.split(';');
 				var identity = (properties.shift()).split('=');
-				var cookie = {name: identity[0], value: identity[1], path: "/", expires: undefined, httpOnly: true, secure: false};
+				var cookie = {name: identity[0], value: identity[1], path: "/", expires: undefined, secure: false};
 				for(var j in properties){
 					var property = properties[j].split('=');
-					cookie[property[0]] = property[1];
+					var key = String(property[0]).trim().toLowerCase();
+					var value = property[1] ?  String(property[1]).trim() : null;
+					cookie[key] = value;
 				}
 				_private.store.cookies.push(cookie);
 			}
@@ -28,12 +25,11 @@ module.exports = function(){
 			var items = source.split(';');
 			for(var i in items){
 				var item = (items[i]).split('=');
-				var cookie = {name: item[0], value: item[1], path: "/", expires: undefined, httpOnly: true, secure: false};
+				var cookie = {name: item[0], value: item[1], path: "/", expires: undefined, secure: false};
 				_private.store.cookies.push(cookie);
 			}
 		}
 	};
-	headers && headers.length && _private.parse(headers);
 	return {
 		push : function(){
 			_private.store.cookies = _private.store.cookies ? _private.store.cookies : [];
@@ -52,13 +48,18 @@ module.exports = function(){
 			}
 			return name ? null : cookies;
 		},
-		parse: _private.parse,
-		toString: function(){
+		parse: function(headers){
+				headers["cookie"] ? _private.parseCookie(headers['cookie']) : (headers["set-cookie"] ? _private.parseSetCookie(headers['set-cookie']) : null);
+		},
+		toCookieString: function(){
 			var arr = [];
 			for(var i in _private.store.cookies){
 				arr.push(_private.store.cookies[i].name + '=' + _private.store.cookies[i].value + ';');
 			}
 			return arr.join('');
+		},
+		toSetCookieString: function(){
+			//TODO create set cookie string
 		}
 	}
 };
