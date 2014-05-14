@@ -1,11 +1,11 @@
 [
 		{
-				"uri": "/",
+				"matches": ["/"],
 				"type" : "text",
 				"stylesheet" : "test.xsl",
 				"apps" : [
 						{
-								"module" : "user",
+								"app" : "user",
 								"handler" : "user",
 								"permissions" : ["public.permission"],
 								"cache" : 3600
@@ -14,30 +14,37 @@
 				"sync": false
 		},
 		{
-			"uri": "/api/images",
+			"matches": ["/api/images"],
 			"type" : "json",
 			"stylesheet" : "test.xsl",
 			"apps" : [
 					{
-						"module" : "content",
+						"app" : "generic",
 						"handler" : "files",
 						"permissions" : ["public.permission"],
 						"cache" : 0
 					},
 					{
-						"module" : "user",
+						"app" : "user",
 						"handler" : "user",
 						"permissions" : ["public.permission"],
 						"cache" : 0
 					}
 				],
 				"sync": false,
-				"settings": {"upload_home": "public/sites", "upload_dir": "images"},
+				"settings": {"upload_home": "public/sites", "upload_dir": "images"}
 		},
 		{
-			"uri": "/api/role",
-			"type": "/api/json",
+			"matches": ["/api/roles", "/api/roles/*" ],
+			"type": "json",
 			"apps" : [
-			]
+				{
+					"app": "generic",
+					"handler": "records",
+					"permissions": ["public.permission"],
+					"cache": 10
+				}
+			],
+			"sync": true
 		}
 ]

@@ -6,7 +6,7 @@ var _private = {
 		var context = arguments[0].data.context;
 		var app = arguments[0].data.app;
 		var broker = context.get("broker");
-		var handler =  require('../modules/' + app.module + '/handlers/' + app.handler + '.js');
+		var handler =  require('../apps/' + app.app + '/handlers/' + app.handler + '.js');
 		switch(context.get('method')){
 			case 'GET':
 				handler["get"]({

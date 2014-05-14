@@ -45,10 +45,13 @@ var _private = {
 				var uri = context.get('uri');
 				for(var i in routes){
 						var route = routes[i];
-						var n = uri.length - 1;
-						if(uri == route.uri || uri.substring(0, n) == '*'){
+						for(var i in route.matches){
+							var match = route.matches[i];
+							var n = match.length - 1;
+							if(match == uri || (uri.substr(0, n) == match.substr(0, n) && match.charAt(n) == "*")){
 								context.set('route', route);
 								return true;
+							}
 						}
 				}
 				return false;		

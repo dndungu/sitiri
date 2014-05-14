@@ -15,6 +15,7 @@ var _private = {
 		http.createServer(function(request, response){
 			var host = request.headers.host.split(':')[0];
 			var uri = String(request.url.trim()).toLowerCase();
+			console.log(request.url)
 			var requestContext = new context();
 			var contextBroker = new broker();
 			var contextCookies = new cookies(request.headers);
@@ -24,6 +25,7 @@ var _private = {
 			requestContext.set("host", host);
 			requestContext.set("method", request.method);
 			requestContext.set("uri", uri);
+			requestContext.set("url", request.url);
 			requestContext.set("storage", storage);
 			requestContext.set("settings", settings);
 			requestContext.set("broker", contextBroker);

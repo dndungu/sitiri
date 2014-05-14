@@ -27,6 +27,7 @@ var _private = {
 				response.write(JSON.stringify(content));
 				break;
 		}
+		response.write("\n");
 	},
 	getContentType: function(){
 		var context = arguments[0];
@@ -73,7 +74,7 @@ module.exports = {
 			_private.printHeader({code: 404, context: context, type: 'text/plain'});
 			context.get("response").end()
 		});
-		broker.on(["app.data"], function(){
+		broker.on(["app.data", "cache.data"], function(){
 			var args = arguments[0];
 			var context = args.data.context;
 			var type = _private.getContentType(context);
@@ -81,7 +82,7 @@ module.exports = {
 			sync || _private.printHeader({code: 206, type: type, context: context});
 			sync ? context.buffer(args.data) : _private.printContent(args.data);
 		});
-		broker.on(["app.end", "app.error"], function(){
+		broker.on(["app.end", "app.error", "cache.data"], function(){
 			var context = arguments[0].data.context;
 			var type = _private.getContentType(context);
 			var sync = context.get("route").sync;
