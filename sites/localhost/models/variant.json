@@ -28,7 +28,8 @@
 					"name": "price",
 					"type": "double",
 					"length": 10.2,
-					"validation": ["required", "currency"]
+					"validation": ["required", "currency"],
+					"_default": 0.0
 				},
 				{
 					"name": "currency",
@@ -39,12 +40,30 @@
 			]
 		},
 		{
+			"name": "capacity",
+			"type": "document",
+			"fields": [
+				{
+					"name": "capacity",
+					"type": "double",
+					"length": 8.3,
+					"validation": ["double"]
+				},
+				{
+					"name": "unit",
+					"type": "string",
+					"length": 16,
+					"validation": ["string"]
+				}
+			]
+		},
+		{
 			"name": "pre_order",
 			"type": "boolean",
 			"_default": false
 		},
 		{
-			"name": "stock_quantity",
+			"name": "stock",
 			"type": "integer",
 			"length": 8,
 			"validation": ["positiveinteger"]

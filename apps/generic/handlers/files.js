@@ -13,9 +13,8 @@ module.exports = {
 		var args = arguments[0];
 		var upload = require('../lib/upload.js');
 		try{
-			upload.mkdir({context: args.context});
-			var _id = upload.save(args);
-			args.data({_id: _id});
+			upload.mkdir(args);
+			upload.save(args);
 		}catch(error){
 			args.error(error);
 		}

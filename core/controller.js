@@ -1,5 +1,5 @@
 "use strict"
-var http = require('http');
+var https = require('https');
 var router = require("../core/router.js");
 var authenticator = require("../core/authenticator.js");
 var cache = require("../core/cache.js");
@@ -9,15 +9,20 @@ var storage = require('../utilities/storage.js');
 var broker = require('../utilities/broker.js');
 var cookies = require('../utilities/cookies.js');
 var context = require('../utilities/context.js');
+var fs = require('fs');
 
 var _private = {
 	createServer: function(settings){
-		http.createServer(function(request, response){
+		var options = {
+			key: fs.readFileSync('/var/www/html/sanity/key.pem', 'utf8'),
+			cert: fs.readFileSync('/var/www/html/sanity/cert.pem', 'utf8')
+		};
+		https.createServer(options, function(request, response){
 			var host = request.headers.host.split(':')[0];
 			var uri = String(request.url.trim()).toLowerCase();
-			console.log(request.url)
 			var requestContext = new context();
 			var contextBroker = new broker();
+			contextBroker.context = requestContext;
 			var contextCookies = new cookies(request.headers);
 			requestContext.set("cookies", contextCookies);
 			requestContext.set("request", request);

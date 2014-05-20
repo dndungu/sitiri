@@ -13,6 +13,7 @@ module.exports = function(){
 		hostname: 'localhost',
 		port: 8080,
 		encoding: 'utf8',
+		rejectUnauthorized: false,
 		secure: true
 	}
 
@@ -51,14 +52,13 @@ module.exports = function(){
 				});
 				request.on('error', function(){
 						args.error && args.error(arguments[0]);
-					});
+				});
 				return request;
 		},
 		redirect: function(args){
 				delete options.headers['content-length'];
 				delete options.headers['content-type'];
 				args.url = _private.store.headers['location'];
-				console.log('redirecting to : '+ args.url);
 				var request = _private.request(args);
 				request.end();
 				return;

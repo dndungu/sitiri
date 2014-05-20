@@ -11,6 +11,10 @@ var _private = {
 			case 'GET':
 				handler["get"]({
 						context: context,
+						statusCode: function(){
+							var content = arguments[0] ? arguments[0] : null;
+							context.set("statusCode", content);
+						},
 						data: function(){
 							var content = arguments[0] ? arguments[0] : null;
 							broker.emit({type: "app.data", data: {content: content, context: context, app: app}});	
@@ -28,6 +32,10 @@ var _private = {
 			case 'POST':
                 handler["post"]({
                         context: context,
+                        statusCode: function(){
+                            var content = arguments[0] ? arguments[0] : null;
+                            context.set("statusCode", content);
+                        },
 						data: function(){
 							var content = arguments[0] ? arguments[0] : null;
 							broker.emit({type: "app.data", data: {content: content, context: context, app: app}});
@@ -45,6 +53,10 @@ var _private = {
 			case 'PUT':
                 handler["put"]({
                         context: context,
+                        statusCode: function(){
+                            var content = arguments[0] ? arguments[0] : null;
+                            context.set("statusCode", content);
+                        },
 						data: function(){
 							var content = arguments[0] ? arguments[0] : null;
 							broker.emit({type: "app.data", data: {content: content, context: context, app: app}});
@@ -63,6 +75,10 @@ var _private = {
 			case 'DELETE':
                 handler["delete"]({
                         context: context,
+                        statusCode: function(){
+                            var content = arguments[0] ? arguments[0] : null;
+                            context.set("statusCode", content);
+                        },
 						data: function(){
 							var content = arguments[0] ? arguments[0] : null;
 							broker.emit({type: "app.data", data: {content: content, context: context, app: app}});

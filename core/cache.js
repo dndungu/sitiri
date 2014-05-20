@@ -8,7 +8,7 @@ var _private = {
 		var apps = context.get('apps');
 		for(var i in apps){
 			var app = apps[i];
-			if(app.cache > 0){
+			if(app.cache > 0 && context.get('method') == 'GET'){
 				_private.find(app, context);
 			}else{
 				context.get("broker").emit({type: "cache.missing", data: {context: context, app: app}});
@@ -22,9 +22,10 @@ var _private = {
 		var context = arguments[1];
 		var broker = context.get("broker");
 		var method = context.get("method");
+		var key = context.get('uri').replace('/', '_');
 		var maxAge = (new Date()).getTime() - (app.cache * 1000);
-		if (store[appname] && store[appname][handler] && store[appname][handler][method] && store[appname][handler][method].creationTime > maxAge) {
-			broker.emit({type: "cache.data", data: {context: context, app: app, content: store[appname][handler][method].content}});
+		if (store[appname] && store[appname][handler][key] && store[appname][handler][method][key] && store[appname][handler][method][key].creationTime > maxAge) {
+			broker.emit({type: "cache.data", data: {context: context, app: app, content: store[appname][handler][method][key].content}});
 		}else{
 			context.get("broker").emit({type: "cache.missing", data: {context: context, app: app}});
 		}
@@ -32,6 +33,8 @@ var _private = {
 	save: function(){
 		var context = arguments[0].data.context;
 		var method = context.get("method");
+		var key = context.get('uri').replace('/', '_');
+		if(method != 'GET') return;
 		var app = arguments[0].data.app;
 		var appname = app.app;
 		var handler = app.handler;
@@ -40,7 +43,7 @@ var _private = {
 		store[appname] = store[appname] ? store[appname] : {};
 		store[appname][handler] = store[appname][handler] ? store[appname][handler] : {};
 		store[appname][handler][method] = store[appname][handler][method] ? store[appname][handler][method] : {};
-		store[appname][handler][method] = {creationTime : t, content : content};
+		store[appname][handler][method][key] = {creationTime : t, content : content};
 	}
 };
 

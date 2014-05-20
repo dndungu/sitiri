@@ -7,7 +7,7 @@ var _private = {
 		var type = arguments[0].type;
 		var response = context.get('response');
 		response.headersSent || response.writeHead(code, {'Content-Type': type});
-		(code > 199 && code <  299) || response.write(code + ' - ' + http.STATUS_CODES[code]);
+//		(code > 199 && code <  299) || response.write(code + ' - ' + http.STATUS_CODES[code]);
 	},
 	printContent : function(){
 		var content = arguments[0].content;
@@ -64,22 +64,24 @@ module.exports = {
 	init : function(){
 		var context = arguments[0];
 		var broker = context.get("broker");
-                broker.on(['authenticator.failed'], function(){
+		broker.on(['authenticator.failed'], function(){
 			var context = arguments[0].data;
-                        _private.printHeader({code: 403, context: context});
+			_private.printHeader({code: 403, context: context});
 			context.get("response").end()
-                });
+        });
 		broker.on(['routing.failed', 'aliasing.failed'], function(){
 			var context = arguments[0].data;
 			_private.printHeader({code: 404, context: context, type: 'text/plain'});
 			context.get("response").end()
 		});
-		broker.on(["app.data", "cache.data"], function(){
+		broker.on(["app.data", "cache.data", "app.error"], function(){
 			var args = arguments[0];
 			var context = args.data.context;
 			var type = _private.getContentType(context);
 			var sync = context.get("route").sync;
-			sync || _private.printHeader({code: 206, type: type, context: context});
+			var queue = (context.get("queue") - 1);
+			var statusCode = context.get('statusCode') ? context.get('statusCode') : (queue ? 206 : 200);
+			sync || _private.printHeader({code: statusCode, type: type, context: context});
 			sync ? context.buffer(args.data) : _private.printContent(args.data);
 		});
 		broker.on(["app.end", "app.error", "cache.data"], function(){
@@ -88,9 +90,14 @@ module.exports = {
 			var sync = context.get("route").sync;
 			var queue = (context.get("queue") - 1);
 			queue && context.set("queue", queue);
-			queue || (sync && _private.printHeader({code: 200, type: type, context: context}));
+			var statusCode = context.get('statusCode') ? context.get('statusCode') : 200;
+			queue || (sync && _private.printHeader({code: statusCode, type: type, context: context}));
 			queue || (sync && _private.printContent({context: context, content: context.get("buffer")}))
 			queue || context.get("response").end();
+		});
+		broker.on("app.error", function(){
+			var context = arguments[0].data.context;
+			context.log(arguments[0].data.content);
 		});
 	}
 };

@@ -23,28 +23,37 @@
 						"handler" : "files",
 						"permissions" : ["public.permission"],
 						"cache" : 0
-					},
-					{
-						"app" : "user",
-						"handler" : "user",
-						"permissions" : ["public.permission"],
-						"cache" : 0
 					}
 				],
 				"sync": false,
-				"settings": {"upload_home": "public/sites", "upload_dir": "images"}
+				"parameters": {"upload_home": "public/sites", "upload_dir": "images"}
 		},
 		{
-			"matches": ["/api/roles", "/api/roles/*" ],
+			"matches": ["/api/roles", "/api/roles/<_id>" ],
 			"type": "json",
 			"apps" : [
 				{
 					"app": "generic",
-					"handler": "records",
+					"handler": "api",
 					"permissions": ["public.permission"],
 					"cache": 10
 				}
 			],
-			"sync": true
-		}
+			"sync": false,
+			"parameters": {"model": "role.json"}
+		},
+        {
+            "matches": ["/api/products", "/api/products/<_id>" ],
+            "type": "json",
+            "apps" : [
+                {
+                    "app": "generic",
+                    "handler": "api",
+                    "permissions": ["public.permission"],
+                    "cache": 10
+                }
+            ],
+            "sync": false,
+            "parameters": {"model": "product.json"}
+        }
 ]

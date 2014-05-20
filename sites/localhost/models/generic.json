@@ -1,25 +1,25 @@
 {
+	"name": "role",
 	"fields": [
 		{
 			"name": "_id",
 			"type": "string",
 			"validation": ["uuid", "required"],
-			"generate": ["insert", "empty"]
+			"generate": {"operation" : "insert", "type": "uuid", "overwrite": false}
 		},
-
 		{
 			"name": "creation_time",
-			"type": "timestamp",
-			"generate": 	["insert", "empty"]
+			"type": "positiveinteger",
+			"generate":	{"operation" : "insert", "type": "timestamp"}
 		},
 		{
 			"name": "update_time",
-			"type": "timestamp",
-			"generate":	["update", "empty"] 
+			"type": "positiveinteger",
+			"generate":	{"operation" : "update", "type": "timestamp"}
 		},
 		{
 			"name": "in_trash",
-			"type": "boolean", 
+			"type": "boolean",
 			"_default": false
 		}
 	]

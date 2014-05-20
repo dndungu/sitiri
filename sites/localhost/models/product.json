@@ -40,24 +40,6 @@
 				"model": "variant.json"
 			},
 			{
-				"name": "capacity",
-				"type": "document",
-				"fields": [
-					{
-						"name": "capacity",
-						"type": "double",
-						"length": 8.3,
-						"validation": ["double"]
-					},
-					{
-						"name": "units",
-						"type": "string",
-						"length": 16,
-						"validation": ["string"]
-					}
-				]
-			},
-			{
 				"name": "taxable",
 				"type": "boolean",
 				"_default": false

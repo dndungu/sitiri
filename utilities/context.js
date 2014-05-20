@@ -1,3 +1,5 @@
+"use strict"
+var fs = require('fs');
 module.exports = function(){
 
 	var _private = {
@@ -24,8 +26,12 @@ module.exports = function(){
 			return this;
 		},
 		log: function(severity, message){
-			console.log(message);
-			_private.log.push(severity, message);
+			var logfile = _private.store.settings.debug.file;
+			var uri = _private.store.uri;
+			var method = _private.store.method;
+			if(severity > _private.store.settings.debug.level) return;
+			var line = (new Date()) + ' (' + severity + ') : [' + uri + '] ' + ' {' + method + '} ' + (JSON.stringify(message)) + "\n";
+			fs.appendFile(logfile, line);
 			return this;
 		}
 	}

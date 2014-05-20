@@ -1,7 +1,7 @@
 {
 	"server" : {
 		"host" : "0.0.0.0",
-		"port" : "8080"
+		"port" : "443"
 	},
 	"database" : {
 		"host" : "127.0.0.1",
@@ -23,5 +23,6 @@
 			"safe" : 1	
 		}
 	},
-	"key" : "wmPQFWaZz4nRu2YU"
+	"key" : "wmPQFWaZz4nRu2YU",
+	"debug": {"level" : 5, "file": "logs/sitiri.log"}
 }
